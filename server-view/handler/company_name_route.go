@@ -14,7 +14,7 @@ func CreateCompanyName(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Something's wrong with your input",
+			"message": "Error with you input",
 			"data":    err,
 		})
 	}
@@ -23,14 +23,14 @@ func CreateCompanyName(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Could not create CompanyName",
+			"message": "Coud not create CompanyName",
 			"data":    err,
 		})
 	}
 
 	return c.Status(201).JSON(fiber.Map{
 		"status":  "success",
-		"message": "User has CompanyName",
+		"message": "CompanyName has created",
 		"data":    company_name,
 	})
 }
@@ -51,7 +51,7 @@ func GetAllCompanyNames(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",
-		"message": "CompanyNames Found",
+		"message": "CompanyNames found",
 		"data":    company_names,
 	})
 }
@@ -59,11 +59,11 @@ func GetAllCompanyNames(c *fiber.Ctx) error {
 func GetSingleCompanyName(c *fiber.Ctx) error {
 	db := database.DB.Db
 	id := c.Params("id")
-
 	var company_name model.CompanyName
-	db.Find(&company_name, "id = ?", id)
 
-	if company_name.ID == 0 {
+	db.Find(&company_name, "company_id = ?", id)
+
+	if company_name.CompanyID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"status":  "error",
 			"message": "CompanyName not found",
@@ -73,51 +73,49 @@ func GetSingleCompanyName(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",
-		"message": "CompanyName Found",
+		"message": "CompanyName found",
 		"data":    company_name,
 	})
 }
 
 func UpdateCompanyName(c *fiber.Ctx) error {
 	type updateCompanyName struct {
-		Name     string `json:"name"`
-		Industry string `json:"industry"`
+		CompanyName     string `json:"company_name"`
+		CompanyIndustry string `json:"company_industry"`
 	}
 
 	db := database.DB.Db
-
 	var company_name model.CompanyName
-
 	id := c.Params("id")
 
-	db.Find(&company_name, "id = ?", id)
+	db.Find(&company_name, "company_id = ?", id)
 
-	if company_name.ID == 0 {
+	if company_name.CompanyID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"status":  "error",
-			"message": "CompanyName not found",
+			"message": "User not found",
 			"data":    nil,
 		})
 	}
 
-	var update_company_name_data updateCompanyName
-	err := c.BodyParser(&update_company_name_data)
+	var updateCompanyNameData updateCompanyName
+	err := c.BodyParser(&updateCompanyNameData)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Something's wrong with your input",
+			"message": "Error with your input",
 			"data":    err,
 		})
 	}
 
-	company_name.Name = update_company_name_data.Name
-	company_name.Industry = update_company_name_data.Industry
+	company_name.CompanyName = updateCompanyNameData.CompanyName
+	company_name.CompanyIndustry = updateCompanyNameData.CompanyIndustry
 
 	db.Save(&company_name)
 
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",
-		"message": "CompanyName Found",
+		"message": "CompanyName found",
 		"data":    company_name,
 	})
 }
@@ -125,12 +123,11 @@ func UpdateCompanyName(c *fiber.Ctx) error {
 func DeleteCompanyNameByID(c *fiber.Ctx) error {
 	db := database.DB.Db
 	var company_name model.CompanyName
-
 	id := c.Params("id")
 
-	db.Find(&company_name, "id = ?", id)
+	db.Find(&company_name, "company_id = ?", id)
 
-	if company_name.ID == 0 {
+	if company_name.CompanyID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"status":  "error",
 			"message": "CompanyName not found",
@@ -138,7 +135,7 @@ func DeleteCompanyNameByID(c *fiber.Ctx) error {
 		})
 	}
 
-	err := db.Delete(&company_name, "id = ?", id).Error
+	err := db.Delete(&company_name, "company_id = ?", id).Error
 
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{

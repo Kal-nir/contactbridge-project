@@ -14,7 +14,7 @@ func CreateLeadConversion(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Something's wrong with your input",
+			"message": "Error with you input",
 			"data":    err,
 		})
 	}
@@ -23,14 +23,14 @@ func CreateLeadConversion(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Could not create LeadConversion",
+			"message": "Coud not create LeadConversion",
 			"data":    err,
 		})
 	}
 
 	return c.Status(201).JSON(fiber.Map{
 		"status":  "success",
-		"message": "User has LeadConversion",
+		"message": "LeadConversion has created",
 		"data":    lead_conversion,
 	})
 }
@@ -51,7 +51,7 @@ func GetAllLeadConversions(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",
-		"message": "LeadConversions Found",
+		"message": "LeadConversions found",
 		"data":    lead_conversions,
 	})
 }
@@ -59,11 +59,11 @@ func GetAllLeadConversions(c *fiber.Ctx) error {
 func GetSingleLeadConversion(c *fiber.Ctx) error {
 	db := database.DB.Db
 	id := c.Params("id")
-
 	var lead_conversion model.LeadConversion
-	db.Find(&lead_conversion, "id = ?", id)
 
-	if lead_conversion.ID == 0 {
+	db.Find(&lead_conversion, "lead_id = ?", id)
+
+	if lead_conversion.LeadID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"status":  "error",
 			"message": "LeadConversion not found",
@@ -73,53 +73,51 @@ func GetSingleLeadConversion(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",
-		"message": "LeadConversion Found",
+		"message": "LeadConversion found",
 		"data":    lead_conversion,
 	})
 }
 
 func UpdateLeadConversion(c *fiber.Ctx) error {
 	type updateLeadConversion struct {
-		Status  string `json:"status"`
-		Source  string `json:"source"`
-		Remarks string `json:"remarks"`
+		ConversionStatus  string `json:"conversion_status"`
+		ConversionSource  string `json:"conversion_source"`
+		ConversionRemarks string `json:"conversion_remarks"`
 	}
 
 	db := database.DB.Db
-
 	var lead_conversion model.LeadConversion
-
 	id := c.Params("id")
 
-	db.Find(&lead_conversion, "id = ?", id)
+	db.Find(&lead_conversion, "lead_id = ?", id)
 
-	if lead_conversion.ID == 0 {
+	if lead_conversion.LeadID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"status":  "error",
-			"message": "LeadConversion not found",
+			"message": "User not found",
 			"data":    nil,
 		})
 	}
 
-	var update_lead_conversion_data updateLeadConversion
-	err := c.BodyParser(&update_lead_conversion_data)
+	var updateLeadConversionData updateLeadConversion
+	err := c.BodyParser(&updateLeadConversionData)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Something's wrong with your input",
+			"message": "Error with your input",
 			"data":    err,
 		})
 	}
 
-	lead_conversion.Status = update_lead_conversion_data.Status
-	lead_conversion.Source = update_lead_conversion_data.Source
-	lead_conversion.Remarks = update_lead_conversion_data.Remarks
+	lead_conversion.ConversionStatus = updateLeadConversionData.ConversionStatus
+	lead_conversion.ConversionSource = updateLeadConversionData.ConversionSource
+	lead_conversion.ConversionRemarks = updateLeadConversionData.ConversionRemarks
 
 	db.Save(&lead_conversion)
 
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",
-		"message": "LeadConversion Found",
+		"message": "LeadConversion found",
 		"data":    lead_conversion,
 	})
 }
@@ -127,12 +125,11 @@ func UpdateLeadConversion(c *fiber.Ctx) error {
 func DeleteLeadConversionByID(c *fiber.Ctx) error {
 	db := database.DB.Db
 	var lead_conversion model.LeadConversion
-
 	id := c.Params("id")
 
-	db.Find(&lead_conversion, "id = ?", id)
+	db.Find(&lead_conversion, "lead_id = ?", id)
 
-	if lead_conversion.ID == 0 {
+	if lead_conversion.LeadID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"status":  "error",
 			"message": "LeadConversion not found",
@@ -140,7 +137,7 @@ func DeleteLeadConversionByID(c *fiber.Ctx) error {
 		})
 	}
 
-	err := db.Delete(&lead_conversion, "id = ?", id).Error
+	err := db.Delete(&lead_conversion, "lead_id = ?", id).Error
 
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{

@@ -8,6 +8,18 @@ import (
 func SetupRoutes(app *fiber.App) {
 	api := app.Group("/api")
 
+	vcr := api.Group("/view_client")
+	vcr.Get("/", handler.GetAllViewClients)
+	vcr.Get("/:id", handler.GetSingleViewClient)
+
+	vnr := api.Group("/view_contact")
+	vnr.Get("/", handler.GetAllViewContacts)
+	vnr.Get("/:id", handler.GetSingleViewContact)
+
+	vlr := api.Group("/view_lead")
+	vlr.Get("/", handler.GetAllViewLeads)
+	vlr.Get("/:id", handler.GetSingleViewLead)
+
 	cnr := api.Group("/customer_name")
 	cnr.Get("/", handler.GetAllCustomerNames)
 	cnr.Get("/:id", handler.GetSingleCustomerName)

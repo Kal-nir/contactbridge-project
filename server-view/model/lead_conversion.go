@@ -1,15 +1,8 @@
 package model
 
-import "gorm.io/gorm"
-
 type LeadConversion struct {
-	gorm.Model
-	ID      int    `json:"id"`
-	Status  string `json:"status"`
-	Source  string `json:"source"`
-	Remarks string `json:"remarks"`
-}
-
-type LeadConversions struct {
-	LeadConversions []LeadConversion `json:"lead_conversions"`
+	LeadID            int    `json:"lead_id" sql:"AUTO_INCREMENT" gorm:"primary_key"`
+	ConversionStatus  string `json:"conversion_status"`
+	ConversionSource  string `json:"conversion_source"`
+	ConversionRemarks string `json:"conversion_remarks"`
 }

@@ -1,14 +1,7 @@
 package model
 
-import "gorm.io/gorm"
-
 type CompanyName struct {
-	gorm.Model
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	Industry string `json:"industry"`
-}
-
-type CompanyNames struct {
-	CompanyNames []CompanyName `json:"CompanyNames"`
+	CompanyID       int    `json:"company_id" sql:"AUTO_INCREMENT" gorm:"primary_key"`
+	CompanyName     string `json:"company_name"`
+	CompanyIndustry string `json:"company_industry"`
 }

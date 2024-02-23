@@ -14,7 +14,7 @@ func CreateNameEntity(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Something's wrong with your input",
+			"message": "Error with you input",
 			"data":    err,
 		})
 	}
@@ -23,25 +23,25 @@ func CreateNameEntity(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Could not create NameEntity",
+			"message": "Coud not create NameEntity",
 			"data":    err,
 		})
 	}
 
 	return c.Status(201).JSON(fiber.Map{
 		"status":  "success",
-		"message": "User has NameEntity",
+		"message": "NameEntity has created",
 		"data":    name_entity,
 	})
 }
 
 func GetAllNameEntities(c *fiber.Ctx) error {
 	db := database.DB.Db
-	var name_entitys []model.NameEntity
+	var name_entities []model.NameEntity
 
-	db.Find(&name_entitys)
+	db.Find(&name_entities)
 
-	if len(name_entitys) == 0 {
+	if len(name_entities) == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"status":  "error",
 			"message": "NameEntity not found",
@@ -51,19 +51,19 @@ func GetAllNameEntities(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",
-		"message": "NameEntitys Found",
-		"data":    name_entitys,
+		"message": "NameEntitys found",
+		"data":    name_entities,
 	})
 }
 
 func GetSingleNameEntity(c *fiber.Ctx) error {
 	db := database.DB.Db
 	id := c.Params("id")
-
 	var name_entity model.NameEntity
-	db.Find(&name_entity, "id = ?", id)
 
-	if name_entity.ID == 0 {
+	db.Find(&name_entity, "name_id = ?", id)
+
+	if name_entity.CompanyID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"status":  "error",
 			"message": "NameEntity not found",
@@ -73,7 +73,7 @@ func GetSingleNameEntity(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",
-		"message": "NameEntity Found",
+		"message": "NameEntity found",
 		"data":    name_entity,
 	})
 }
@@ -85,39 +85,37 @@ func UpdateNameEntity(c *fiber.Ctx) error {
 	}
 
 	db := database.DB.Db
-
 	var name_entity model.NameEntity
-
 	id := c.Params("id")
 
-	db.Find(&name_entity, "id = ?", id)
+	db.Find(&name_entity, "name_id = ?", id)
 
-	if name_entity.ID == 0 {
+	if name_entity.CompanyID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"status":  "error",
-			"message": "NameEntity not found",
+			"message": "User not found",
 			"data":    nil,
 		})
 	}
 
-	var update_name_entity_data updateNameEntity
-	err := c.BodyParser(&update_name_entity_data)
+	var updateNameEntityData updateNameEntity
+	err := c.BodyParser(&updateNameEntityData)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Something's wrong with your input",
+			"message": "Error with your input",
 			"data":    err,
 		})
 	}
 
-	name_entity.CustomerID = update_name_entity_data.CustomerID
-	name_entity.CompanyID = update_name_entity_data.CompanyID
+	name_entity.CustomerID = updateNameEntityData.CustomerID
+	name_entity.CompanyID = updateNameEntityData.CompanyID
 
 	db.Save(&name_entity)
 
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",
-		"message": "NameEntity Found",
+		"message": "NameEntity found",
 		"data":    name_entity,
 	})
 }
@@ -125,12 +123,11 @@ func UpdateNameEntity(c *fiber.Ctx) error {
 func DeleteNameEntityByID(c *fiber.Ctx) error {
 	db := database.DB.Db
 	var name_entity model.NameEntity
-
 	id := c.Params("id")
 
-	db.Find(&name_entity, "id = ?", id)
+	db.Find(&name_entity, "name_id = ?", id)
 
-	if name_entity.ID == 0 {
+	if name_entity.CustomerID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"status":  "error",
 			"message": "NameEntity not found",
@@ -138,7 +135,7 @@ func DeleteNameEntityByID(c *fiber.Ctx) error {
 		})
 	}
 
-	err := db.Delete(&name_entity, "id = ?", id).Error
+	err := db.Delete(&name_entity, "name_id = ?", id).Error
 
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{

@@ -9,9 +9,9 @@ import (
 	"gorm.io/driver/postgres"
 
 	"github.com/kal-nir/contactbridge/server/config"
-	"github.com/kal-nir/contactbridge/server/model"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 )
 
 type Dbinstance struct {
@@ -39,6 +39,9 @@ func Connect() {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
+		NamingStrategy: schema.NamingStrategy{
+			SingularTable: true,
+		},
 	})
 
 	if err != nil {
@@ -48,15 +51,15 @@ func Connect() {
 
 	log.Println("Connected")
 	db.Logger = logger.Default.LogMode(logger.Info)
-	log.Println("Running Migrations...")
-	db.AutoMigrate(&model.CustomerName{})
-	db.AutoMigrate(&model.CompanyName{})
-	db.AutoMigrate(&model.NameEntity{})
-	db.AutoMigrate(&model.ClientContact{})
-	db.AutoMigrate(&model.LeadConversion{})
-	db.AutoMigrate(&model.Client{})
-	db.AutoMigrate(&model.Contact{})
-	db.AutoMigrate(&model.Lead{})
+	// log.Println("Running Migrations...")
+	// db.AutoMigrate(&model.CustomerName{})
+	// db.AutoMigrate(&model.CompanyName{})
+	// db.AutoMigrate(&model.NameEntity{})
+	// db.AutoMigrate(&model.ClientContact{})
+	// db.AutoMigrate(&model.LeadConversion{})
+	// db.AutoMigrate(&model.Client{})
+	// db.AutoMigrate(&model.Contact{})
+	// db.AutoMigrate(&model.Lead{})
 
 	DB = Dbinstance{
 		Db: db,

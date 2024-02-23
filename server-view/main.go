@@ -6,6 +6,8 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/kal-nir/contactbridge/server/database"
 	"github.com/kal-nir/contactbridge/server/router"
+
+	_ "github.com/lib/pq"
 )
 
 func main() {

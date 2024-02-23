@@ -14,7 +14,7 @@ func CreateClientContact(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Something's wrong with your input",
+			"message": "Error with you input",
 			"data":    err,
 		})
 	}
@@ -23,14 +23,14 @@ func CreateClientContact(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Could not create ClientContact",
+			"message": "Coud not create ClientContact",
 			"data":    err,
 		})
 	}
 
 	return c.Status(201).JSON(fiber.Map{
 		"status":  "success",
-		"message": "User has ClientContact",
+		"message": "ClientContact has created",
 		"data":    client_contact,
 	})
 }
@@ -51,7 +51,7 @@ func GetAllClientContacts(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",
-		"message": "ClientContacts Found",
+		"message": "ClientContacts found",
 		"data":    client_contacts,
 	})
 }
@@ -59,11 +59,11 @@ func GetAllClientContacts(c *fiber.Ctx) error {
 func GetSingleClientContact(c *fiber.Ctx) error {
 	db := database.DB.Db
 	id := c.Params("id")
-
 	var client_contact model.ClientContact
-	db.Find(&client_contact, "id = ?", id)
 
-	if client_contact.ID == 0 {
+	db.Find(&client_contact, "client_id = ?", id)
+
+	if client_contact.ClientID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"status":  "error",
 			"message": "ClientContact not found",
@@ -73,70 +73,67 @@ func GetSingleClientContact(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",
-		"message": "ClientContact Found",
+		"message": "ClientContact found",
 		"data":    client_contact,
 	})
 }
 
 func UpdateClientContact(c *fiber.Ctx) error {
 	type updateClientContact struct {
-		NameID       int    `json:"name_id"`
-		LeadID       int    `json:"lead_id"`
-		EmailAddress string `json:"email_address"`
-		PhoneNumber  int    `json:"phone_number"`
-		Note         string `json:"note"`
+		NameID             int    `json:"name_id"`
+		LeadID             int    `json:"lead_id"`
+		ClientEmailAddress string `json:"client_email_address"`
+		ClientPhoneNumber  string `json:"client_phone_number"`
+		ClientNote         string `json:"client_note"`
 	}
 
 	db := database.DB.Db
-
 	var client_contact model.ClientContact
-
 	id := c.Params("id")
 
-	db.Find(&client_contact, "id = ?", id)
+	db.Find(&client_contact, "client_id = ?", id)
 
-	if client_contact.ID == 0 {
+	if client_contact.ClientID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"status":  "error",
-			"message": "ClientContact not found",
+			"message": "User not found",
 			"data":    nil,
 		})
 	}
 
-	var update_client_contact_data updateClientContact
-	err := c.BodyParser(&update_client_contact_data)
+	var updateClientContactData updateClientContact
+	err := c.BodyParser(&updateClientContactData)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Something's wrong with your input",
+			"message": "Error with your input",
 			"data":    err,
 		})
 	}
 
-	client_contact.NameID = update_client_contact_data.NameID
-	client_contact.LeadID = update_client_contact_data.LeadID
-	client_contact.EmailAddress = update_client_contact_data.EmailAddress
-	client_contact.PhoneNumber = update_client_contact_data.PhoneNumber
-	client_contact.Note = update_client_contact_data.Note
+	client_contact.NameID = updateClientContactData.NameID
+	client_contact.LeadID = updateClientContactData.LeadID
+	client_contact.ClientEmailAddress = updateClientContactData.ClientEmailAddress
+	client_contact.ClientPhoneNumber = updateClientContactData.ClientPhoneNumber
+	client_contact.ClientNote = updateClientContactData.ClientNote
 
 	db.Save(&client_contact)
 
 	return c.Status(200).JSON(fiber.Map{
 		"status":  "success",
-		"message": "ClientContact Found",
+		"message": "ClientContact found",
 		"data":    client_contact,
 	})
 }
 
 func DeleteClientContactByID(c *fiber.Ctx) error {
 	db := database.DB.Db
-	var client_contact model.ClientContact
-
+	var company_name model.ClientContact
 	id := c.Params("id")
 
-	db.Find(&client_contact, "id = ?", id)
+	db.Find(&company_name, "client_id = ?", id)
 
-	if client_contact.ID == 0 {
+	if company_name.ClientID == 0 {
 		return c.Status(404).JSON(fiber.Map{
 			"status":  "error",
 			"message": "ClientContact not found",
@@ -144,7 +141,7 @@ func DeleteClientContactByID(c *fiber.Ctx) error {
 		})
 	}
 
-	err := db.Delete(&client_contact, "id = ?", id).Error
+	err := db.Delete(&company_name, "client_id = ?", id).Error
 
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{
