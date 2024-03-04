@@ -14,7 +14,7 @@ func CreateClientContact(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Error with you input",
+			"message": "Error with your input",
 			"data":    err,
 		})
 	}
@@ -23,7 +23,7 @@ func CreateClientContact(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
-			"message": "Coud not create ClientContact",
+			"message": "Could not create ClientContact",
 			"data":    err,
 		})
 	}
