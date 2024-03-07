@@ -15,7 +15,7 @@ func CreateClientContact(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{
 			"status":  "error",
 			"message": "Error with your input",
-			"data":    err,
+			"data":    err.Error(),
 		})
 	}
 
@@ -80,11 +80,12 @@ func GetSingleClientContact(c *fiber.Ctx) error {
 
 func UpdateClientContact(c *fiber.Ctx) error {
 	type updateClientContact struct {
-		NameID             int    `json:"name_id"`
-		LeadID             int    `json:"lead_id"`
+		LeadID             int    `json:"lead_id" gorm:"default:null"`
 		ClientEmailAddress string `json:"client_email_address"`
 		ClientPhoneNumber  string `json:"client_phone_number"`
 		ClientNote         string `json:"client_note"`
+		ClientName         string `json:"client_name"`
+		ClientCompany      string `json:"client_company"`
 	}
 
 	db := database.DB.Db
@@ -111,11 +112,28 @@ func UpdateClientContact(c *fiber.Ctx) error {
 		})
 	}
 
-	client_contact.NameID = updateClientContactData.NameID
 	client_contact.LeadID = updateClientContactData.LeadID
 	client_contact.ClientEmailAddress = updateClientContactData.ClientEmailAddress
 	client_contact.ClientPhoneNumber = updateClientContactData.ClientPhoneNumber
 	client_contact.ClientNote = updateClientContactData.ClientNote
+	client_contact.ClientName = updateClientContactData.ClientName
+	client_contact.ClientCompany = updateClientContactData.ClientCompany
+
+	lead := &model.LeadConversion{}
+	var exists bool
+	err = db.Model(lead).
+		Select("count(*) > 0").
+		Where("lead_id = ?", updateClientContactData.LeadID).
+		Find(&exists).
+		Error
+
+	if !exists {
+		return c.Status(500).JSON(fiber.Map{
+			"status":  "error",
+			"message": "The inputted lead ID must exist!",
+			"data":    err,
+		})
+	}
 
 	db.Save(&client_contact)
 

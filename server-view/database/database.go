@@ -51,15 +51,6 @@ func Connect() {
 
 	log.Println("Connected")
 	db.Logger = logger.Default.LogMode(logger.Info)
-	// log.Println("Running Migrations...")
-	// db.AutoMigrate(&model.CustomerName{})
-	// db.AutoMigrate(&model.CompanyName{})
-	// db.AutoMigrate(&model.NameEntity{})
-	// db.AutoMigrate(&model.ClientContact{})
-	// db.AutoMigrate(&model.LeadConversion{})
-	// db.AutoMigrate(&model.Client{})
-	// db.AutoMigrate(&model.Contact{})
-	// db.AutoMigrate(&model.Lead{})
 
 	DB = Dbinstance{
 		Db: db,

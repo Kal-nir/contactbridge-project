@@ -8,38 +8,9 @@ import (
 func SetupRoutes(app *fiber.App) {
 	api := app.Group("/api")
 
-	vcr := api.Group("/view_client")
-	vcr.Get("/", handler.GetAllViewClients)
-	vcr.Get("/:id", handler.GetSingleViewClient)
-
-	vnr := api.Group("/view_contact")
-	vnr.Get("/", handler.GetAllViewContacts)
-	vnr.Get("/:id", handler.GetSingleViewContact)
-
 	vlr := api.Group("/view_lead")
 	vlr.Get("/", handler.GetAllViewLeads)
 	vlr.Get("/:id", handler.GetSingleViewLead)
-
-	cnr := api.Group("/customer_name")
-	cnr.Get("/", handler.GetAllCustomerNames)
-	cnr.Get("/:id", handler.GetSingleCustomerName)
-	cnr.Post("/", handler.CreateCustomerName)
-	cnr.Put("/:id", handler.UpdateCustomerName)
-	cnr.Delete("/:id", handler.DeleteCustomerNameByID)
-
-	cmr := api.Group("/company_name")
-	cmr.Get("/", handler.GetAllCompanyNames)
-	cmr.Get("/:id", handler.GetSingleCompanyName)
-	cmr.Post("/", handler.CreateCompanyName)
-	cmr.Put("/:id", handler.UpdateCompanyName)
-	cmr.Delete("/:id", handler.DeleteCompanyNameByID)
-
-	ner := api.Group("/name_entity")
-	ner.Get("/", handler.GetAllNameEntities)
-	ner.Get("/:id", handler.GetSingleNameEntity)
-	ner.Post("/", handler.CreateNameEntity)
-	ner.Put("/:id", handler.UpdateNameEntity)
-	ner.Delete("/:id", handler.DeleteNameEntityByID)
 
 	ccr := api.Group("/client_contact")
 	ccr.Get("/", handler.GetAllClientContacts)
